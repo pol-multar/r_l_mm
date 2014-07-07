@@ -1,6 +1,8 @@
 package fr.unice.polytech.si3.lfa.mmultari.modele;
 
 import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Iterator;
 import java.util.List;
 
 /**
@@ -17,13 +19,12 @@ public class Production {
     /**
      * Le constructeur de la classe Production
      * @param designation Le symbole non terminal pour désigner la production
-     * @param lesRegles La premiere regle de production
+     * @param lesRegles Les regles de production (séparées par le caractere "|")
      */
     public Production(String designation, String lesRegles){
-        //TODO Modifier ce constructeur pour qu'il mette en forme correctement les regles
         nonTerm=designation;
-        regles=new ArrayList();
-        regles.add(lesRegles);
+        String[] decoupe = lesRegles.split("\\|");
+        regles=new ArrayList(Arrays.asList(decoupe));
     }
 
     /**
@@ -66,5 +67,21 @@ public class Production {
     public List getRegles(){
         return this.regles;
     }
+
+    private String printRegles(List listeRegle){
+        String s = new String();
+        s+=listeRegle.get(0);
+        for(int i=1;i<listeRegle.size();i++){
+            s+=("|"+listeRegle.get(i));
+            //s+=listeRegle.get(i);
+        }
+        return s;
+    }
+
+    public String toString(){
+        return nonTerm + "->" + printRegles(regles);
+    }
+
+
 
 }
