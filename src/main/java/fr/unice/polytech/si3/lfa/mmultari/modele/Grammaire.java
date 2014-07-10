@@ -15,7 +15,7 @@ import java.util.Set;
  * Created by mmultari on 04/07/14.
  */
 public class Grammaire {
-    private List r;/* Ensemble fini de rêgles de réécriture, les productions */
+    private List<Production> r;/* Ensemble fini de rêgles de réécriture, les productions */
     private Set n;/* Ensemble de symboles non terminaux (pas de doublons) */
     private Set t;/* Ensemble de symboles terminaux (pas de doublons) */
     private String s;/* L'axiome (symbole de départ) */
@@ -24,10 +24,22 @@ public class Grammaire {
      * Constructeur sans paramètres de la classe Grammaire
      */
     public Grammaire() {
-        r = new ArrayList();
-        n = new HashSet();
-        t = new HashSet();
+        r = new ArrayList<Production>();
+        n = new HashSet<String>();
+        t = new HashSet<String>();
         s = null;
+    }
+
+    public Set getT (){
+        return t;
+    }
+
+    public Set getN (){
+        return n;
+    }
+
+    public List getR (){
+        return r;
     }
 
     /**
@@ -69,7 +81,9 @@ public class Grammaire {
         for (int i = 0; i < lesProd.length; i++) {
             String[] temp = lesProd[i].split(":");
             Production pTemp = new Production(temp[0], temp[1]);
+            r.add(pTemp);
             n.add(pTemp.getNonTerm());
+
         }
 
     }

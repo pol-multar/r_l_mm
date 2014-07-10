@@ -42,9 +42,9 @@ public class ProductionTest {
     }
 
     @Test
-    public void testDecoupage(){
-        r1=p1.getRegles();
-        assertEquals("a*b",r1.get(0));
-        assertEquals("d",r1.get(2));
+    public void testDecoupage() {
+        r1 = p1.getRegles();
+        assertEquals("a*b", r1.get(0));
+        assertEquals("d", r1.get(2));
     }
 }
