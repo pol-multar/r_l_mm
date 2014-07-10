@@ -65,7 +65,7 @@ public class Grammaire {
      * @param initProd les chaine de caractère à découper
      * @return un tableau contenant la chaine découpée
      */
-    public String [] toTabProd(String initProd){
+    public String [] splitProd(String initProd){
         String decoupe [] = initProd.split(":");
         return decoupe;
     }
