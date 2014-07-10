@@ -9,8 +9,8 @@ import java.util.List;
  * Created by Maxime on 04/07/2014.
  * La classe Production est la classe qui définit une production utilisée dans une grammaire
  * Une production est définie par :
- *  - un symbole non terminal pour désigner la production
- *  - une ou plusieurs regles de production
+ * - un symbole non terminal pour désigner la production
+ * - une ou plusieurs regles de production
  */
 public class Production {
     private String nonTerm;
@@ -18,69 +18,64 @@ public class Production {
 
     /**
      * Le constructeur de la classe Production
+     *
      * @param designation Le symbole non terminal pour désigner la production
-     * @param lesRegles Les regles de production (séparées par le caractere "|")
+     * @param lesRegles   Les regles de production (séparées par le caractere "|")
      */
-    public Production(String designation, String lesRegles){
-        nonTerm=designation;
+    public Production(String designation, String lesRegles) {
+        nonTerm = designation;
         String[] decoupe = lesRegles.split("\\|");
-        regles=new ArrayList(Arrays.asList(decoupe));
+        regles = new ArrayList(Arrays.asList(decoupe));
     }
-
-    /**
-     * Le constructeurs sans paramètres de la classe Production
-     */
-    public Production() {
-        nonTerm=null;
-        regles=new ArrayList();
-    }
-
 
     /**
      * Accesseur en écriture regles
+     *
      * @param newRegle la regle à ajouter
      */
-    public void setRegles(String newRegle){
+    public void setRegles(String newRegle) {
         this.regles.add(newRegle);
     }
 
     /**
      * Accesseur en écriture de nonTerm
+     *
      * @param nonTerm le non terminal qui désigne la production
      */
-   public void setNonTerm (String nonTerm){
-       this.nonTerm=nonTerm;
-   }
+    public void setNonTerm(String nonTerm) {
+        this.nonTerm = nonTerm;
+    }
 
     /**
      * Accesseur en lecture de nonTerm
+     *
      * @return nonTerm le symbole non terminal qui designe la production
      */
-    public String getNonTerm (){
+    public String getNonTerm() {
         return this.nonTerm;
     }
 
     /**
      * Accesseur en lecture de regles
+     *
      * @return regles la liste de regles de réécriture
      */
-    public List getRegles(){
+    public List getRegles() {
         return this.regles;
     }
 
-    private String printRegles(List listeRegle){
+    private String printRegles(List listeRegle) {
         String s = new String();
-        s+=listeRegle.get(0);
-        for(int i=1;i<listeRegle.size();i++){
-            s+=("|"+listeRegle.get(i));
+        s += listeRegle.get(0);
+        for (int i = 1; i < listeRegle.size(); i++) {
+            s += ("|" + listeRegle.get(i));
         }
         return s;
     }
 
-    public String toString(){
+    public String toString() {
         return nonTerm + "->" + printRegles(regles);
     }
-
 
 
 }
