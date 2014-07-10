@@ -73,7 +73,6 @@ public class Production {
         s+=listeRegle.get(0);
         for(int i=1;i<listeRegle.size();i++){
             s+=("|"+listeRegle.get(i));
-            //s+=listeRegle.get(i);
         }
         return s;
     }

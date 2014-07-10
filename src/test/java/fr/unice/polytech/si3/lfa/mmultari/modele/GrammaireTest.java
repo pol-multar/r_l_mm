@@ -5,6 +5,7 @@ import org.junit.Before;
 import org.junit.Test;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotEquals;
 
 /**
  * Created by Maxime on 08/07/2014.
@@ -20,7 +21,7 @@ public class GrammaireTest {
 
     @Before
     public void setUp() {
-        s1="toto";
+        s1 = new String();
         returnTest = new String();
         g1= new Grammaire();
     }
@@ -34,7 +35,9 @@ public class GrammaireTest {
 
     @Test
     public void testLecture(){
-        returnTest=g1.lectureProd("test.txt");
+        s1="toto";
+        returnTest=g1.lectureProd("toto.txt");
         assertEquals(s1,returnTest);
+        assertNotEquals(s1,g1.lectureProd("test.txt"));
     }
 }
