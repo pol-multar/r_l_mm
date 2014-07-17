@@ -30,15 +30,15 @@ public class Grammaire {
         s = null;
     }
 
-    public Set getT (){
+    public Set<String> getT (){
         return t;
     }
 
-    public Set getN (){
+    public Set<String> getN (){
         return n;
     }
 
-    public List getR (){
+    public List<Production> getR (){
         return r;
     }
 

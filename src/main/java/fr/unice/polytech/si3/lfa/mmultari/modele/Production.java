@@ -2,7 +2,6 @@ package fr.unice.polytech.si3.lfa.mmultari.modele;
 
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.Iterator;
 import java.util.List;
 
 /**
@@ -64,6 +63,12 @@ public class Production {
         return this.regles;
     }
 
+    /**
+     * Fonction qui va permettre de mettre en forme les regles de production de la manière suivante :
+     * "AB|a"
+     * @param listeRegle la liste qui contient toutes les regles de production
+     * @return la chaine de caracteres qui contient la nouvelle mise en forme des regles
+     */
     private String printRegles(List listeRegle) {
         String s = new String();
         s += listeRegle.get(0);
@@ -71,6 +76,20 @@ public class Production {
             s += ("|" + listeRegle.get(i));
         }
         return s;
+    }
+
+    /**
+     * Fonction qui va transformer une production en un tableau de chaine de caractères
+     * où la première case contient le non-terminal qui désigne la production
+     * et la seconde la chaine de caractère contenant les regles sous la forme "AB|a"
+     *
+     * @return
+     */
+    public String[] toTab() {
+        String[] leTab = new String[2];
+        leTab[0] = nonTerm;
+        leTab[1] = printRegles(regles);
+        return leTab;
     }
 
     public String toString() {
