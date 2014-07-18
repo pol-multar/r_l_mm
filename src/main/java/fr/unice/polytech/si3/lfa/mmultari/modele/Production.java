@@ -13,7 +13,7 @@ import java.util.List;
  */
 public class Production {
     private String nonTerm;
-    private List regles;
+    private List<String> regles;
 
     /**
      * Le constructeur de la classe Production
@@ -24,7 +24,7 @@ public class Production {
     public Production(String designation, String lesRegles) {
         nonTerm = designation;
         String[] decoupe = lesRegles.split("\\|");
-        regles = new ArrayList(Arrays.asList(decoupe));
+        regles = new ArrayList<String>(Arrays.asList(decoupe));
     }
 
     /**
@@ -59,7 +59,7 @@ public class Production {
      *
      * @return regles la liste de regles de réécriture
      */
-    public List getRegles() {
+    public List<String> getRegles() {
         return this.regles;
     }
 

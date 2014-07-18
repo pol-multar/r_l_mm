@@ -16,8 +16,8 @@ import java.util.Set;
  */
 public class Grammaire {
     private List<Production> r;/* Ensemble fini de rêgles de réécriture, les productions */
-    private Set n;/* Ensemble de symboles non terminaux (pas de doublons) */
-    private Set t;/* Ensemble de symboles terminaux (pas de doublons) */
+    private Set<String> n;/* Ensemble de symboles non terminaux (pas de doublons) */
+    private Set<String> t;/* Ensemble de symboles terminaux (pas de doublons) */
     private String s;/* L'axiome (symbole de départ) */
 
     /**
