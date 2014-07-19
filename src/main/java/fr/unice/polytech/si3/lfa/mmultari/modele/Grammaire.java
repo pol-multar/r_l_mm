@@ -42,6 +42,14 @@ public class Grammaire {
         return r;
     }
 
+    public void setR(List<Production> newR){
+        this.r=newR;
+    }
+
+    public void setN(Set<String> newN ){
+        this.n=newN;
+    }
+
     /**
      * Fonction d'initialisation de la grammaire
      * A partir du fichier lefic, elle appelle les méthodes

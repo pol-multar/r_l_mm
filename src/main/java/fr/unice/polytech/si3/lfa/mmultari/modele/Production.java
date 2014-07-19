@@ -28,11 +28,20 @@ public class Production {
     }
 
     /**
-     * Accesseur en écriture regles
+     * Accesseur en écriture de regles
+     *
+     * @param newListRegle la nouvelle liste de regles de la production
+     */
+    public void setRegles(List newListRegle){
+        this.regles=newListRegle;
+    }
+
+    /**
+     * Méthode pour ajouter une regle à une production
      *
      * @param newRegle la regle à ajouter
      */
-    public void setRegles(String newRegle) {
+    public void addRegles(String newRegle) {
         this.regles.add(newRegle);
     }
 
