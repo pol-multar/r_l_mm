@@ -93,6 +93,54 @@ public class GrammaireCleaner {
         }
     }
 
+    /**
+     * Cette méthode est chargée de nettoyer une production de ses regles non productives
+     *
+     * @param oldProd
+     * @return la production nettoyée, null si la production nettoyée ne contient plus de regles
+     */
+    public Production nettoyProd(Production oldProd) {
+//TODO tester
+        Boolean haveNonTermUnex = false;
+        /* La liste contenant toutes les regles de la production :*/
+        List<String> l = oldProd.getRegles();
+
+        /* On analyse chaque regle de la production */
+        for (int i = 0; i < l.size(); i++) { //je parcours toutes les regles
+
+            char[] tab = l.get(i).toCharArray(); // Je transforme la regle que j'analyse en tableau de caractere
+
+            for (int j = 0; j < tab.length && !haveNonTermUnex; j++) { //Je parcours la regle
+
+                if ((!ln.contains(tab[j])) && (!lt.contains(tab[j]))) {//ln contient la liste des non terminaux, lt celle des terminaux
+                    haveNonTermUnex = true;
+                }
+            }
+            /* Si la regle possede un non terminal que l'on a supprimé, on l'enleve */
+            if (haveNonTermUnex) {
+                l.remove(i);
+            }
+            /* On remet haveNonTermUnex à false pour la prochaine regle */
+            haveNonTermUnex = false;
+        }
+
+        if (l.isEmpty()) {
+            return null;
+        } else {
+            oldProd.setRegles(l);
+            return oldProd;
+        }
+    }
+
+    /**
+     * Méthode chargée d'executer tous les nettoyages de grammaire
+     */
+    public void nettoyGrammaire(){
+        //On supprime d'abord les improductifs
+        this.nettoyNonProdGramm();
+        this.nettoyNonAccGramm();
+    }
+
     ///////////////////////////////////// Partie suppression des improductifs /////////////////////////////////////
 
     /**
@@ -192,44 +240,7 @@ public class GrammaireCleaner {
         return parcoursRegles(nActuel,p);
     }
 
-    /**
-     * Cette méthode est chargée de nettoyer une production de ses regles non productives
-     *
-     * @param oldProd
-     * @return la production nettoyée, null si la production nettoyée ne contient plus de regles
-     */
-    public Production nettoyNonProd(Production oldProd) {
-//TODO tester
-        Boolean haveNonTermUnex = false;
-        /* La liste contenant toutes les regles de la production :*/
-        List<String> l = oldProd.getRegles();
 
-        /* On analyse chaque regle de la production */
-        for (int i = 0; i < l.size(); i++) { //je parcours toutes les regles
-
-            char[] tab = l.get(i).toCharArray(); // Je transforme la regle que j'analyse en tableau de caractere
-
-            for (int j = 0; j < tab.length && !haveNonTermUnex; j++) { //Je parcours la regle
-
-                if ((!ln.contains(tab[j])) && (!lt.contains(tab[j]))) {//ln contient la liste des non terminaux, lt celle des terminaux
-                    haveNonTermUnex = true;
-                }
-            }
-            /* Si la regle possede un non terminal que l'on a supprimé, on l'enleve */
-            if (haveNonTermUnex) {
-                l.remove(i);
-            }
-            /* On remet haveNonTermUnex à false pour la prochaine regle */
-            haveNonTermUnex = false;
-        }
-
-        if (l.isEmpty()) {
-            return null;
-        } else {
-            oldProd.setRegles(l);
-            return oldProd;
-        }
-    }
 
     /**
      * Cette méthode est chargée d'executer le nettoyage des productions non productives de la grammaire
@@ -244,7 +255,7 @@ public class GrammaireCleaner {
         /* Je parcours toutes les productions de la grammaire et je retire le improductifs */
         for (int i = 0; i < lr.size(); i++) {
             p = lr.get(i);
-            pNet = nettoyNonProd(p);
+            pNet = nettoyProd(p);
             lr.remove(i);
             if (pNet != null) {
                 lr.add(i, pNet);
@@ -274,7 +285,7 @@ public class GrammaireCleaner {
             Ancien_N = Nouveau_N;
             for (Production p : lr) {// Je parcours toutes les productions
                 if(Ancien_N.contains(p.getNonTerm())) { //Si celle-ci fait partie de Ancien_N, je l'analyse
-                    String s = parcoursRegles(Ancien_N, p);
+                    String s = parcoursRegles(Ancien_N, p);// s contient les nouvelles variables accessibles depuis la producrion analysée
                     if (!(s.equals(null))) {
                         Nouveau_N.add(s);
                     }
@@ -288,5 +299,34 @@ public class GrammaireCleaner {
 
     //A la fin de cette méthode, je possède, en théorie, la liste de toutes les variables accessibles
 
+    /**
+     * Cette méthode est chargée d'executer le nettoyage des productions non productives de la grammaire
+     */
 
+    public void nettoyNonAccGramm() {
+
+        /* je met à jour ln pour qu'elle ne contiennent que les non terminaux accessibles */
+        ln = listAccessibles();
+        Production p, pNet;
+
+        /* Je parcours toutes les productions de la grammaire et je retire le inaccessibles */
+        for (int i = 0; i < lr.size(); i++) {
+            p = lr.get(i);
+            pNet = nettoyProd(p);
+            lr.remove(i);
+            if (pNet != null) {
+                lr.add(i, pNet);
+            }
+        }
+
+        /* Je met a jour les données de la grammaire après modification */
+        gOrig.setN(this.ln);
+        gOrig.setR(this.lr);
+    }
+
+    ///////////////////////////////////// Partie suppression des ε-production /////////////////////////////////////
+
+    /* Etape 1: calculer les variables annulables */
+    /* Etape 2: ajouter dans toutes les regles les différentes possibilitées oul 'on a remplacé par epsilon*/
+    /* Etape 3: supprimer toutes les regles contenant epsilon*/
 }
