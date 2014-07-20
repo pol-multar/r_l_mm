@@ -38,18 +38,75 @@ public class GrammaireCleaner {
         }
     }
 
+    ////////////////////////////// Partie méthodes utilisées dans plusieurs endroits //////////////////////////////////
+
+    /**
+     * Cette méthode est la même que listProdEtape2
+     *
+     * @param ancien_n
+     * @param p
+     * @return
+     */
+    private String parcoursRegles(Set<String> ancien_n, Production p) {
+     /* La liste contenant toutes les regles de la production :*/
+        List<String> l = p.getRegles();
+
+     /* Un tableau de taille le nombre de regles. Si une regle contient un non terminal qui n'est pas dans ancien_n,
+      * la cases d'indice correspondante dans le tableau aura la valeur True
+      */
+        Boolean[] haveNonTermUnex = new Boolean[l.size()];
+        Boolean containOnlyExpected = false;
+
+        /* Initialisation du tableau à false */
+        for (int cpt = 0; cpt < haveNonTermUnex.length; cpt++) {
+            haveNonTermUnex[cpt] = false;
+
+        }
+
+        /* On passe maintenant à l'analyse de chaque regle de production*/
+
+        for (int i = 0; i < l.size(); i++) { //je parcours toutes les regles
+
+            char[] tab = l.get(i).toCharArray(); // Je transforme la regle que j'analyse en tableau de caractere
+
+            for (int j = 0; j < tab.length; j++) { //Je parcours la regle
+
+                if ((!ancien_n.contains(tab[j])) && (!lt.contains(tab[j]))) {//lt contient la liste des terminaux
+                    haveNonTermUnex[i] = true;// Si une regle contient un non-terminal qui n'est pas dans ancien_n, je l'indique dans le tableau haveNonTerm
+                }
+            }
+        }
+/* On va maintenant parcourir le tableau haveNonTermUnex pour savoir si une regle au moins respecte les conditions
+* autrement dit si au moins une case du tableau est à false
+*/
+        for (int k = 0; ((k < haveNonTermUnex.length) && (!containOnlyExpected)); k++) {
+            if (haveNonTermUnex[k] == false) {
+                containOnlyExpected = true;
+            }
+        }
+
+        /* Si aucune regle n'est exempte de non terminaux on retourne null*/
+        if (containOnlyExpected) {
+            return p.getNonTerm();
+        } else {
+            return null;
+        }
+    }
+
+    ///////////////////////////////////// Partie suppression des improductifs /////////////////////////////////////
+
     /**
      * Cette méthode est chargée de lister les productions productives
      *
      * @return un set des productions productives
      */
-    public Set<String> ListProductifs() {
+    public Set<String> listProductifs() {
         Set<String> Ancien_N = new HashSet<String>();
         Set<String> Nouveau_N = new HashSet<String>();
 
         /* Etape 1 : On cherche les production contenant des regles sans non-terminaux*/
         for (Production p : lr) {
-            String s = ListProdEtape1(p);
+            String s = listProdEtape1(p);
             if (!(s.equals(null))) {
                 Nouveau_N.add(s);
             }
@@ -61,7 +118,7 @@ public class GrammaireCleaner {
         while (!Ancien_N.equals(Nouveau_N)) {
             Ancien_N = Nouveau_N;
             for (Production p : lr) {
-                String s = ListProdEtape2(p, Ancien_N);
+                String s = listProdEtape2(p, Ancien_N);
                 if (!(s.equals(null))) {
                     Nouveau_N.add(s);
                 }
@@ -78,7 +135,7 @@ public class GrammaireCleaner {
      * @param prod la production à analyser
      * @return la désignation de la production si celle si possède au moins une regle sans non-terminaux, null sinon
      */
-    public String ListProdEtape1(Production prod) {
+    public String listProdEtape1(Production prod) {
         //TODO tester
 /* La liste contenant toutes les regles de la production :*/
         List<String> l = prod.getRegles();
@@ -130,53 +187,9 @@ public class GrammaireCleaner {
      * @param nActuel les non-terminaux productifs
      * @return le non-terminal qui désigne la production si elle est productive, null sinon
      */
-    public String ListProdEtape2(Production p, Set<String> nActuel) {
+    public String listProdEtape2(Production p, Set<String> nActuel) {
         //TODO tester
-
-        /* La liste contenant toutes les regles de la production :*/
-        List<String> l = p.getRegles();
-
-        /* Un tableau de taille le nombre de regles. Si une regle contient un non terminal,
- * la cases d'indice correspondante dans le tableau aura la valeur True
- */
-        Boolean[] haveNonTermUnex = new Boolean[l.size()];
-        Boolean containOnlyExpected = false;
-
-        /* Initialisation du tableau à false */
-        for (int cpt = 0; cpt < haveNonTermUnex.length; cpt++) {
-            haveNonTermUnex[cpt] = false;
-
-        }
-
-        /* On passe maintenant à l'analyse de chaque regle de production*/
-
-        for (int i = 0; i < l.size(); i++) { //je parcours toutes les regles
-
-            char[] tab = l.get(i).toCharArray(); // Je transforme la regle que j'analyse en tableau de caractere
-
-            for (int j = 0; j < tab.length; j++) { //Je parcours la regle
-
-                if ((!nActuel.contains(tab[j])) && (!lt.contains(tab[j]))) {//lt contient la liste des terminaux
-                    haveNonTermUnex[i] = true;// Si une regle contient un non-terminal, je l'indique dans le tableau haveNonTerm
-                }
-            }
-        }
-/* On va maintenant parcourir le tableau haveNonTermUnex pour savoir si une regle au moins respecte les conditions
-* autrement dit si au moins une case du tableau est à false
-*/
-        for (int k = 0; ((k < haveNonTermUnex.length) && (!containOnlyExpected)); k++) {
-            if (haveNonTermUnex[k] == false) {
-                containOnlyExpected = true;
-            }
-        }
-
-        /* Si aucune regle n'est exempte de non terminaux on retourne null*/
-        if (containOnlyExpected) {
-            return p.getNonTerm();
-        } else {
-            return null;
-        }
-
+        return parcoursRegles(nActuel,p);
     }
 
     /**
@@ -185,8 +198,8 @@ public class GrammaireCleaner {
      * @param oldProd
      * @return la production nettoyée, null si la production nettoyée ne contient plus de regles
      */
-    public Production NettoyNonProd(Production oldProd) {
-
+    public Production nettoyNonProd(Production oldProd) {
+//TODO tester
         Boolean haveNonTermUnex = false;
         /* La liste contenant toutes les regles de la production :*/
         List<String> l = oldProd.getRegles();
@@ -222,16 +235,16 @@ public class GrammaireCleaner {
      * Cette méthode est chargée d'executer le nettoyage des productions non productives de la grammaire
      */
 
-    public void NettoyNonProdGramm() {
+    public void nettoyNonProdGramm() {
 
         /* je met à jour ln pour qu'elle ne contiennent que les non terminaux productifs */
-        ln = ListProductifs();
+        ln = listProductifs();
         Production p, pNet;
 
         /* Je parcours toutes les productions de la grammaire et je retire le improductifs */
         for (int i = 0; i < lr.size(); i++) {
             p = lr.get(i);
-            pNet = NettoyNonProd(p);
+            pNet = nettoyNonProd(p);
             lr.remove(i);
             if (pNet != null) {
                 lr.add(i, pNet);
@@ -242,5 +255,38 @@ public class GrammaireCleaner {
         gOrig.setN(this.ln);
         gOrig.setR(this.lr);
     }
+
+    ///////////////////////////////////// Partie suppression des inaccessibles /////////////////////////////////////
+
+    /**
+     * Cette méthode est chargée de lister les productions productives
+     * Pour trouver les variables accessibles, il suffit de parcourir les regles en partant de l'axiome
+     *
+     * @return un set des productions accessibles
+     */
+    public Set<String> listAccessibles() {
+        Set<String> Ancien_N = new HashSet<String>();
+        Set<String> Nouveau_N = new HashSet<String>();
+
+        Nouveau_N.add(gOrig.getAxiome());
+
+        while (!Ancien_N.equals(Nouveau_N)) {
+            Ancien_N = Nouveau_N;
+            for (Production p : lr) {// Je parcours toutes les productions
+                if(Ancien_N.contains(p.getNonTerm())) { //Si celle-ci fait partie de Ancien_N, je l'analyse
+                    String s = parcoursRegles(Ancien_N, p);
+                    if (!(s.equals(null))) {
+                        Nouveau_N.add(s);
+                    }
+                }
+            }
+        }
+
+        /* On retourne la liste contenant toutes les productions accessibles*/
+        return Nouveau_N;
+    }
+
+    //A la fin de cette méthode, je possède, en théorie, la liste de toutes les variables accessibles
+
 
 }

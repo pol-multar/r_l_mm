@@ -1,7 +1,6 @@
 package fr.unice.polytech.si3.lfa.mmultari.modele;
 
 import java.io.*;
-import java.nio.charset.Charset;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Path;
@@ -18,7 +17,7 @@ public class Grammaire {
     private List<Production> r;/* Ensemble fini de rêgles de réécriture, les productions */
     private Set<String> n;/* Ensemble de symboles non terminaux (pas de doublons) */
     private Set<String> t;/* Ensemble de symboles terminaux (pas de doublons) */
-    private String s;/* L'axiome (symbole de départ) */
+    private String axiome;/* L'axiome (symbole de départ) */
 
     /**
      * Constructeur sans paramètres de la classe Grammaire
@@ -27,7 +26,7 @@ public class Grammaire {
         r = new ArrayList<Production>();
         n = new HashSet<String>();
         t = new HashSet<String>();
-        s = null;
+        axiome = null;
     }
 
     public Set<String> getT (){
@@ -41,6 +40,8 @@ public class Grammaire {
     public List<Production> getR (){
         return r;
     }
+
+    public String getAxiome(){return axiome;}
 
     public void setR(List<Production> newR){
         this.r=newR;
