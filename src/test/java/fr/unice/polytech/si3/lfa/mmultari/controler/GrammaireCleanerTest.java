@@ -98,7 +98,7 @@ public class GrammaireCleanerTest {
 
         gc1=new GrammaireCleaner(g1);
 
-        //gc1.nettoyGrammaire();
+        gc1.nettoyGrammaire();
 
 
     }

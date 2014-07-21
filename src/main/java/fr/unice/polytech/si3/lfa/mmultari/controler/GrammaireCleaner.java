@@ -71,7 +71,7 @@ public class GrammaireCleaner {
 
             for (int j = 0; j < tab.length; j++) { //Je parcours la regle
 
-                if ((!ancien_n.contains(tab[j])) && (!lt.contains(tab[j]))) {//lt contient la liste des terminaux
+                if ((!ancien_n.contains(Character.toString(tab[j]))) && (!lt.contains(Character.toString(tab[j])))) {//lt contient la liste des terminaux
                     haveNonTermUnex[i] = true;// Si une regle contient un non-terminal qui n'est pas dans ancien_n, je l'indique dans le tableau haveNonTerm
                 }
             }
@@ -112,7 +112,7 @@ public class GrammaireCleaner {
 
             for (int j = 0; j < tab.length && !haveNonTermUnex; j++) { //Je parcours la regle
 
-                if ((!ln.contains(tab[j])) && (!lt.contains(tab[j]))) {//ln contient la liste des non terminaux, lt celle des terminaux
+                if ((!ln.contains(Character.toString(tab[j]))) && (!lt.contains(Character.toString(tab[j])))) {//ln contient la liste des non terminaux, lt celle des terminaux
                     haveNonTermUnex = true;
                 }
             }
@@ -156,7 +156,7 @@ public class GrammaireCleaner {
         /* Etape 1 : On cherche les production contenant des regles sans non-terminaux*/
         for (Production p : lr) {
             s = listProdEtape1(p);
-            if (!(s.equals(null))) {
+            if (!(s==null)) {
                 Nouveau_N.add(s);
             }
         }
@@ -170,7 +170,7 @@ public class GrammaireCleaner {
             Ancien_N = Nouveau_N;
             for (Production p : lr) {
                 s = listProdEtape2(p, Ancien_N);
-                if (!(s.equals(null))) {
+                if (!(s==null)) {
                     Nouveau_N.add(s);
                 }
             }
@@ -187,7 +187,7 @@ public class GrammaireCleaner {
      * @return la désignation de la production si celle si possède au moins une regle sans non-terminaux, null sinon
      */
     public String listProdEtape1(Production prod) {
-        //TODO tester
+
 /* La liste contenant toutes les regles de la production :*/
         List<String> l = prod.getRegles();
 /* Un tableau de taille le nombre de regles. Si une regle contient un non terminal,
@@ -289,7 +289,7 @@ public class GrammaireCleaner {
             for (Production p : lr) {// Je parcours toutes les productions
                 if(Ancien_N.contains(p.getNonTerm())) { //Si celle-ci fait partie de Ancien_N, je l'analyse
                     String s = parcoursRegles(Ancien_N, p);// s contient les nouvelles variables accessibles depuis la producrion analysée
-                    if (!(s.equals(null))) {
+                    if (!(s==null)) {
                         Nouveau_N.add(s);
                     }
                 }
