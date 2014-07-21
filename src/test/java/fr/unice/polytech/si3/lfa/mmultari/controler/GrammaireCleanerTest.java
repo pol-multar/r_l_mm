@@ -135,4 +135,29 @@ public class GrammaireCleanerTest {
 
 
     }
+
+    /**
+     * Test de la méthode calc_deriv_eps
+     */
+
+    @Test
+    public void testCalc_deriv_eps(){
+        g1=new Grammaire();
+        g1.initGram("test3.txt");
+
+        s1.add("a");
+        s1.add("b");
+        s1.add("c");
+        g1.setT(s1);
+        g1.setAxiome("S");
+
+        gc1=new GrammaireCleaner(g1);
+        s2.add("B");
+
+        assertEquals("cB",g1.getR().get(0).getRegles().get(0));
+        assertEquals(2,g1.getR().size());
+        assertEquals(s2,gc1.calc_deriv_eps());
+
+
+    }
 }

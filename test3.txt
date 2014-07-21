@@ -1,2 +1,2 @@
-S:cB|cS
-B:aBb|ε
+S:cB|cS;
+B:aBb|ε;

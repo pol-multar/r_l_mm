@@ -333,9 +333,9 @@ public class GrammaireCleaner {
     /* Etape 3: supprimer toutes les regles contenant epsilon*/
 
     /**
-     * Méthode chargée de calculer l'ensemble des terminaux dérivant epsilon directement ou indirectement
+     * Méthode chargée de calculer l'ensemble des non terminaux dérivant epsilon directement ou indirectement
      *
-     * @return
+     * @return l'ensemble contenant les non-terminaux derivant epsilon directement ou indirectement
      */
 
     public Set<String> calc_deriv_eps() {
@@ -346,9 +346,9 @@ public class GrammaireCleaner {
         //Tant que l'ensemble grossit
         while (epsilon_plus_grossit) {
             epsilon_plus_grossit = false;
-            //Pour chaque règle de grammaire
+            //Pour chaque règle de la grammaire
             for (Production p : lr) {
-                epsilon_plus_prod(p, epsilon_plus);
+               epsilon_plus_grossit = epsilon_plus_prod(p, epsilon_plus);
             }
         }
         return epsilon_plus;
@@ -412,6 +412,16 @@ public class GrammaireCleaner {
         }
         //Si on arrive là, la partie gauche est déjà dans epsilon_plus
         return false;
+    }
+
+    /**
+     * Méthode chargée de supprimer les e-prod
+     */
+    public void supprimer_epsilon_prod(){
+
+    Set<String> epsilon_plus=calc_deriv_eps();
+        
+
     }
 
 }
