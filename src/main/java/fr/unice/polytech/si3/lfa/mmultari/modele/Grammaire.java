@@ -1,6 +1,7 @@
 package fr.unice.polytech.si3.lfa.mmultari.modele;
 
-import java.io.*;
+import java.io.BufferedReader;
+import java.io.IOException;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Path;
@@ -29,32 +30,43 @@ public class Grammaire {
         axiome = null;
     }
 
-    public Set<String> getT (){
+    public Set<String> getT() {
         return t;
     }
 
-    public Set<String> getN (){
+    public Set<String> getN() {
         return n;
     }
 
-    public List<Production> getR (){
+    public List<Production> getR() {
         return r;
     }
 
-    public String getAxiome(){return axiome;}
-
-    public void setR(List<Production> newR){
-        this.r=newR;
+    public String getAxiome() {
+        return axiome;
     }
 
-    public void setN(Set<String> newN ){
-        this.n=newN;
+    public void setR(List<Production> newR) {
+        this.r = newR;
+    }
+
+    public void setN(Set<String> newN) {
+        this.n = newN;
+    }
+
+    public void setT(Set<String> newT) {
+        this.t = newT;
+    }
+
+    public void setAxiome(String newA) {
+        this.axiome=newA;
     }
 
     /**
      * Fonction d'initialisation de la grammaire
      * A partir du fichier lefic, elle appelle les méthodes
      * permettant d'initialiser la grammaire
+     *
      * @param lefic le nom du fichier qui contient la grammaire
      */
     public void initGram(String lefic) {

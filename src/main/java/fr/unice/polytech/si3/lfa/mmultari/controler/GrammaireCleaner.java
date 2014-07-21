@@ -151,14 +151,17 @@ public class GrammaireCleaner {
     public Set<String> listProductifs() {
         Set<String> Ancien_N = new HashSet<String>();
         Set<String> Nouveau_N = new HashSet<String>();
+        String s= new String();
 
         /* Etape 1 : On cherche les production contenant des regles sans non-terminaux*/
         for (Production p : lr) {
-            String s = listProdEtape1(p);
+            s = listProdEtape1(p);
             if (!(s.equals(null))) {
                 Nouveau_N.add(s);
             }
         }
+
+        s=null;
         /* Après cette étape, Nouveau_N contient les nom terminaux désignant les productions qui possedent au moins une regle sans non-terminaux*/
 
         /* Etape 2 : on reparcourt les productions et on ajout dans notre ensemble celles qui possèdent des regles sans non-terminaux et des regles avec les non-terminaux précédents*/
@@ -166,7 +169,7 @@ public class GrammaireCleaner {
         while (!Ancien_N.equals(Nouveau_N)) {
             Ancien_N = Nouveau_N;
             for (Production p : lr) {
-                String s = listProdEtape2(p, Ancien_N);
+                s = listProdEtape2(p, Ancien_N);
                 if (!(s.equals(null))) {
                     Nouveau_N.add(s);
                 }
@@ -205,7 +208,7 @@ public class GrammaireCleaner {
 
             for (int j = 0; j < tab.length; j++) { //Je parcourt la regle afin de voir si elle possede un non terminal
 
-                if (ln.contains(tab[j])) {//ln contient la liste des non terminaux
+                if (ln.contains(Character.toString(tab[j]))) {//ln contient la liste des non terminaux
                     haveNonTerm[i] = true;// Si une regle contient un non-terminal, je l'indique dans le tableau haveNonTerm
                 }
             }
@@ -214,7 +217,7 @@ public class GrammaireCleaner {
 /* On va maintenant parcourir le tableau haveNonTerm pour savoir si une regle au moins ne possede pas de non-terminaux,
 * autrement dit si au moins une case du tableau est à false
 */
-        for (int k = 0; ((k < haveNonTerm.length) && (containOnlyTerm == false)); k++) {
+        for (int k = 0; (k < haveNonTerm.length); k++) {
             if (haveNonTerm[k] == false) {
                 containOnlyTerm = true;
             }
