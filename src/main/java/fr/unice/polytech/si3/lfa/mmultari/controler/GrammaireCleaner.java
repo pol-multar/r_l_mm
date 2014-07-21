@@ -135,7 +135,7 @@ public class GrammaireCleaner {
     /**
      * Méthode chargée d'executer tous les nettoyages de grammaire
      */
-    public void nettoyGrammaire(){
+    public void nettoyGrammaire() {
         //On supprime d'abord les improductifs
         this.nettoyNonProdGramm();
         this.nettoyNonAccGramm();
@@ -151,17 +151,17 @@ public class GrammaireCleaner {
     public Set<String> listProductifs() {
         Set<String> Ancien_N = new HashSet<String>();
         Set<String> Nouveau_N = new HashSet<String>();
-        String s= new String();
+        String s = new String();
 
         /* Etape 1 : On cherche les production contenant des regles sans non-terminaux*/
         for (Production p : lr) {
             s = listProdEtape1(p);
-            if (!(s==null)) {
+            if (!(s == null)) {
                 Nouveau_N.add(s);
             }
         }
 
-        s=null;
+        s = null;
         /* Après cette étape, Nouveau_N contient les nom terminaux désignant les productions qui possedent au moins une regle sans non-terminaux*/
 
         /* Etape 2 : on reparcourt les productions et on ajout dans notre ensemble celles qui possèdent des regles sans non-terminaux et des regles avec les non-terminaux précédents*/
@@ -170,7 +170,7 @@ public class GrammaireCleaner {
             Ancien_N = Nouveau_N;
             for (Production p : lr) {
                 s = listProdEtape2(p, Ancien_N);
-                if (!(s==null)) {
+                if (!(s == null)) {
                     Nouveau_N.add(s);
                 }
             }
@@ -240,9 +240,8 @@ public class GrammaireCleaner {
      */
     public String listProdEtape2(Production p, Set<String> nActuel) {
         //TODO tester
-        return parcoursRegles(nActuel,p);
+        return parcoursRegles(nActuel, p);
     }
-
 
 
     /**
@@ -287,9 +286,9 @@ public class GrammaireCleaner {
         while (!Ancien_N.equals(Nouveau_N)) {
             Ancien_N = Nouveau_N;
             for (Production p : lr) {// Je parcours toutes les productions
-                if(Ancien_N.contains(p.getNonTerm())) { //Si celle-ci fait partie de Ancien_N, je l'analyse
+                if (Ancien_N.contains(p.getNonTerm())) { //Si celle-ci fait partie de Ancien_N, je l'analyse
                     String s = parcoursRegles(Ancien_N, p);// s contient les nouvelles variables accessibles depuis la producrion analysée
-                    if (!(s==null)) {
+                    if (!(s == null)) {
                         Nouveau_N.add(s);
                     }
                 }
@@ -332,4 +331,88 @@ public class GrammaireCleaner {
     /* Etape 1: calculer les variables annulables */
     /* Etape 2: ajouter dans toutes les regles les différentes possibilitées oul 'on a remplacé par epsilon*/
     /* Etape 3: supprimer toutes les regles contenant epsilon*/
+
+    /**
+     * Méthode chargée de calculer l'ensemble des terminaux dérivant epsilon directement ou indirectement
+     *
+     * @return
+     */
+
+    public Set<String> calc_deriv_eps() {
+        //Initialiser epsilon_plus : au départ l'ensemble vide
+        Set<String> epsilon_plus = new HashSet<String>();
+        boolean epsilon_plus_grossit = true;
+
+        //Tant que l'ensemble grossit
+        while (epsilon_plus_grossit) {
+            epsilon_plus_grossit = false;
+            //Pour chaque règle de grammaire
+            for (Production p : lr) {
+                epsilon_plus_prod(p, epsilon_plus);
+            }
+        }
+        return epsilon_plus;
+    }
+
+    /**
+     * Méthode chargée de calculer si une production dérive epsilon directement ou indirectement
+     *
+     * @param p            la production dont nous allons analyser les regles
+     * @param epsilon_plus l'ensemble qui contient les non-terminaux dérivant epsilon directement ou indirectement
+     * @return
+     */
+    public boolean epsilon_plus_prod(Production p, Set<String> epsilon_plus) {
+
+        //Si la partie gauche n'est pas déjà dans epsilon_plus
+        if (!epsilon_plus.contains(p.getNonTerm())) {
+            /* La liste contenant toutes les regles de la production :*/
+            List<String> l = p.getRegles();
+            boolean[] AreAllInEpsilon = new boolean[l.size()];
+            boolean isOk=true;
+            //initialisation du tableau à true
+            for (int cpt = 0; cpt < AreAllInEpsilon.length; cpt++) {
+                AreAllInEpsilon[cpt] = true;
+            }
+
+            for (int i = 0; i < l.size(); i++) { //je parcours toutes les regles
+                if (l.get(i).equals("ε")) {//si une regle est epsilon, j'ajoute la production et je sort
+                    epsilon_plus.add(p.getNonTerm());
+                    return true;
+                } else {//Sinon je regarde si tous les non-terminaux de la partie droite sont dans epsilon_plus
+                    char[] tab = l.get(i).toCharArray(); // Je transforme la regle que j'analyse en tableau de caractere
+                    for (int j = 0; j < tab.length; j++) {
+                        if (ln.contains(Character.toString(tab[j])) && epsilon_plus.contains(Character.toString(tab[j]))) {// Si c'est un non terminal et qu'il est dans epsilon_plus on continue
+                            continue;
+                        } else if (lt.contains(Character.toString(tab[j]))) {//Si c'est un terminal on continue
+                            continue;
+                        } else {//Sinon ce sont des non terminaux qui ne sont pas dans epsilon_plus
+                            AreAllInEpsilon[i] = false;
+                        }
+                    }
+                }
+            }
+            // On va maintenant vérifier que tous les symboles de la partie droite sont bien dans epsilon_plus
+            for(int i=0; i<AreAllInEpsilon.length;i++){
+                if(!AreAllInEpsilon[i]){
+                    isOk=false;
+                }
+            }
+
+            //Si isOk est à true, tous les symboles de la partie droite appartiennet à epsilon_plus, donc on ajoute la partie gauche dans epsilon_plus
+            //et on retourne true car epsilon_plus a grossit
+
+            if(isOk){
+                epsilon_plus.add(p.getNonTerm());
+                return true;
+            }
+            else{
+                return false;
+            }
+
+        }
+        //Si on arrive là, la partie gauche est déjà dans epsilon_plus
+        return false;
+    }
+
 }
+
