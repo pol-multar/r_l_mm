@@ -524,6 +524,7 @@ public class GrammaireCleaner {
     ///////////////////////////////////// Partie suppression des renommages /////////////////////////////////////
 
     public Hashtable<String, Set<String>> calc_ens_ren() {
+        //TODO tester
         /* Ren est l'ensemble qui contient les variables en lesquelles chaque variable peut être renommé */
         Hashtable<String, Set<String>> ren = new Hashtable<>();
         //La key est le nom de la production, et la donnée associée la liste des variables en lequelles la clé peut être renommée
@@ -539,11 +540,11 @@ public class GrammaireCleaner {
 
     /**
      * Méthode chargée de calculer l'ensemble de renommage d'une variable X donnée en argument
+     *
      * @param p la variable X dont on souhaite connaitre les renommages
      * @return l'ensemble de variable en lesquelle la variable X peut être renommée
      */
     public Set<String> calc_Renommages_1Prod(Production p) {
-        //TODO tester
         Set<String> oldEns = new HashSet<>();
         Set<String> newEns = new HashSet<>();
 
@@ -553,10 +554,10 @@ public class GrammaireCleaner {
         while (!(oldEns.equals(newEns))) {
             oldEns = newEns;
             for (Production production : lr) {
-                System.out.println("calc_Renommages_1Prod : 1er for, analyse de la production : " +production.getNonTerm());
+                System.out.println("calc_Renommages_1Prod : 1er for, analyse de la production : " + production.getNonTerm());
                 if (oldEns.contains(production.getNonTerm())) {// Si la production est pas dans l'ensemble, on la parcourt pour savoir si elle contient des regles unitaires
-                    System.out.println("calc_Renommages_1Prod : La production "+production.getNonTerm()+ " est dans oldEns, je lance recherche unitaire dessus");
-                    rechercheUnitaire(production,newEns);
+                    System.out.println("calc_Renommages_1Prod : La production " + production.getNonTerm() + " est dans oldEns, je lance recherche unitaire dessus");
+                    rechercheUnitaire(production, newEns);
                 }
             }
         }
@@ -566,26 +567,59 @@ public class GrammaireCleaner {
 
     /**
      * Méthode chargée de compléter l'ensemble de renommage
+     *
      * @param production la production que l'on souhaite analyser
-     * @param ensemble l'ensemble de renommage actuel
+     * @param ensemble   l'ensemble de renommage actuel
      */
-    private void rechercheUnitaire(Production production,Set<String> ensemble) {
-        System.out.println("rechercheUnitaire : Je vais analyser les regles de la production:"+production.getNonTerm());
-    List<String> l=production.getRegles();
+    private void rechercheUnitaire(Production production, Set<String> ensemble) {
+        System.out.println("rechercheUnitaire : Je vais analyser les regles de la production:" + production.getNonTerm());
+        List<String> l = production.getRegles();
     /* On parcourt toutes les regles de la production */
-        for(String regle:l){
+        for (String regle : l) {
             /* Si la regle qu'on est en train de lire est composé d'un seul non terminal... */
-            if(ln.contains(regle)){
+            if (ln.contains(regle)) {
                 /*... et que celui-ci ne fait pas encore partie de l'ensemble de renommage */
-                if(!(ensemble.contains(regle))){
+                if (!(ensemble.contains(regle))) {
                     /* on l'ajoute : */
                     ensemble.add(regle);
-                    System.out.println("rechercheUnitaire : J'ajoute le non terminal :"+regle+" à l'ensemble");
+                    System.out.println("rechercheUnitaire : J'ajoute le non terminal :" + regle + " à l'ensemble");
                 }
             }
         }
 
     }
+
+    public void SupprRenom() {
+        /*Avant de supprimer les renommages, on calcul les variables de renommage */
+        Hashtable<String, Set<String>> EnsRen = calc_ens_ren();
+        /* On supprime les regles unitaires */
+        for (Production p : lr) {
+            supprRegleUnitaire(p);
+        }
+        /* On complete les regles de chaque production, à partir des ensembles calculés */
+
+        //TODO compléter
+    }
+
+    /**
+     * Une méthode chargée de supprimer les regles qui ne possèdent qu'un non-terminal dans une production
+     * @param p
+     */
+    private void supprRegleUnitaire(Production p) {
+        List<String> l = p.getRegles();
+        /* On parcourt toutes les regles de la production */
+        for (String regle : l) {
+            /* Si la regle qu'on est en train de lire est composé d'un seul non terminal... */
+            if (ln.contains(regle)) {
+                /* On l'enleve */
+                l.remove(regle);
+            }
+        }
+        /* On modifie la liste de regles de la production */
+        p.setRegles(l);
+    }
+
+}
 
 }
 

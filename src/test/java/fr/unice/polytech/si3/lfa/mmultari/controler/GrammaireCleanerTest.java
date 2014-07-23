@@ -8,6 +8,7 @@ import org.junit.Ignore;
 import org.junit.Test;
 
 import java.util.HashSet;
+import java.util.Hashtable;
 import java.util.List;
 import java.util.Set;
 
@@ -177,7 +178,7 @@ public class GrammaireCleanerTest {
 
         gc1=new GrammaireCleaner(g1);
         s2.add("B");
-        System.out.println("Lancement de la méthode supprimer_epsilon_prod");
+        //System.out.println("Lancement de la méthode supprimer_epsilon_prod");
         gc1.supprimer_epsilon_prod();
        List<Production> lTest= g1.getR();
        assertEquals(3, lTest.get(0).getRegles().size());
@@ -185,7 +186,7 @@ public class GrammaireCleanerTest {
     }
 
     /**
-     * Test des méthodes de création des ensemble de renommage
+     * Test des méthodes calc_Renommages_1Prod et donc avec de rechercheUnitaire
      */
 
     @Test
@@ -201,13 +202,46 @@ public class GrammaireCleanerTest {
 
         gc1=new GrammaireCleaner(g1);
         List<Production> lTest=g1.getR();
-        assertEquals(4,lTest.size());
+        assertEquals(4, lTest.size());
         System.out.println("Test avec la production : "+lTest.get(0).getNonTerm());
         s2=gc1.calc_Renommages_1Prod(lTest.get(0));
-        assertEquals(4,s2.size()); //Ne passe pas
+        assertEquals(4,s2.size());
         assertTrue(s2.contains("S"));
         assertTrue(s2.contains("B"));
-        assertTrue(s2.contains("C"));// Ne passe pas
-        assertTrue(g1.getN().contains("C"));
+        assertTrue(s2.contains("C"));
+
+    }
+
+    /**
+     * Test de calc_ens_ren
+     */
+    @Test
+    public void testCalcEnsRen(){
+        g1=new Grammaire();
+        g1.initGram("testsRU.txt");
+
+        s1.add("a");
+        s1.add("b");
+        s1.add("c");
+        g1.setT(s1);
+        g1.setAxiome("S");
+
+        gc1=new GrammaireCleaner(g1);
+        List<Production> lTest=g1.getR();
+        assertEquals(4,lTest.size());
+
+        Hashtable<String, Set<String>> htest =gc1.calc_ens_ren();
+        assertEquals(4,htest.size());
+        s3.add("S");
+        s3.add("A");
+        s3.add("B");
+        s3.add("C");
+        assertEquals(s3,htest.get("S"));
+        s2.add("A");
+        s2.add("B");
+        s2.add("C");
+        assertEquals(s2,htest.get("B"));
+        assertNotEquals(htest.get("S"),htest.get("A"));
+        assertNotEquals(htest.get("C"),htest.get("B"));
     }
 }
