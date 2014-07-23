@@ -1,0 +1,4 @@
+S:ab|aAb|A|B|AB|a;
+A:A|AA|AB|B|AAB;
+B:A|C|AC|b;
+C:aba;

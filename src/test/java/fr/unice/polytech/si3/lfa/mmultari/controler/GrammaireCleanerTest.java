@@ -161,6 +161,9 @@ public class GrammaireCleanerTest {
 
     }
 
+    /**
+     * Test de la methode supprimer_epsilon_prod
+     */
     @Test
     public void testSupprimer_epsilon_prod(){
         g1=new Grammaire();
@@ -174,10 +177,37 @@ public class GrammaireCleanerTest {
 
         gc1=new GrammaireCleaner(g1);
         s2.add("B");
-        System.out.println("Lancement de la méthode supprimer epsilon_prod");
+        System.out.println("Lancement de la méthode supprimer_epsilon_prod");
         gc1.supprimer_epsilon_prod();
        List<Production> lTest= g1.getR();
        assertEquals(3, lTest.get(0).getRegles().size());
         assertEquals(2,lTest.get(1).getRegles().size());
+    }
+
+    /**
+     * Test des méthodes de création des ensemble de renommage
+     */
+
+    @Test
+    public void testCreatEnsRen(){
+        g1=new Grammaire();
+        g1.initGram("testsRU.txt");
+
+        s1.add("a");
+        s1.add("b");
+        s1.add("c");
+        g1.setT(s1);
+        g1.setAxiome("S");
+
+        gc1=new GrammaireCleaner(g1);
+        List<Production> lTest=g1.getR();
+        assertEquals(4,lTest.size());
+        System.out.println("Test avec la production : "+lTest.get(0).getNonTerm());
+        s2=gc1.calc_Renommages_1Prod(lTest.get(0));
+        assertEquals(4,s2.size()); //Ne passe pas
+        assertTrue(s2.contains("S"));
+        assertTrue(s2.contains("B"));
+        assertTrue(s2.contains("C"));// Ne passe pas
+        assertTrue(g1.getN().contains("C"));
     }
 }
