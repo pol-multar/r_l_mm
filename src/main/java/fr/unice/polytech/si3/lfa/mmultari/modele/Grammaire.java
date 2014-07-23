@@ -19,6 +19,9 @@ public class Grammaire {
     private Set<String> n;/* Ensemble de symboles non terminaux (pas de doublons) */
     private Set<String> t;/* Ensemble de symboles terminaux (pas de doublons) */
     private String axiome;/* L'axiome (symbole de départ) */
+    boolean containEpsilon;
+
+    //TODO récupéréer les terminaux + si contient epsilon
 
     /**
      * Constructeur sans paramètres de la classe Grammaire
@@ -28,6 +31,11 @@ public class Grammaire {
         n = new HashSet<String>();
         t = new HashSet<String>();
         axiome = null;
+        containEpsilon=false;
+    }
+
+    public boolean getContainEpsilon(){
+        return this.containEpsilon;
     }
 
     public Set<String> getT() {
@@ -44,6 +52,10 @@ public class Grammaire {
 
     public String getAxiome() {
         return axiome;
+    }
+
+    public void setContainEpsilon(boolean yesOrNo){
+        this.containEpsilon=yesOrNo;
     }
 
     public void setR(List<Production> newR) {

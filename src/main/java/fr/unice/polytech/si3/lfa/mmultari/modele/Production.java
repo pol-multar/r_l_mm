@@ -27,6 +27,11 @@ public class Production {
         regles = new ArrayList<String>(Arrays.asList(decoupe));
     }
 
+    public Production(){
+        nonTerm=new String();
+        regles=new ArrayList<String>();
+    }
+
     /**
      * Accesseur en écriture de regles
      *

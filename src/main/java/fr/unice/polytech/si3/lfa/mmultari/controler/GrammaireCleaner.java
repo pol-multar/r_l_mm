@@ -132,6 +132,21 @@ public class GrammaireCleaner {
         }
     }
 
+    private String suppressionChar(String s, int positionRemplacee) {
+        ArrayList<Character> charList= new ArrayList<>();
+        for(int i=0;i<s.length();i++){
+            charList.add(s.charAt(i));
+        }
+        charList.remove(positionRemplacee);
+        String newS= new String();
+        for(int i=0;i<charList.size();i++){
+            newS=newS+charList.get(i);
+        }
+        return newS;
+    }
+
+
+
     /**
      * Méthode chargée d'executer tous les nettoyages de grammaire
      */
@@ -258,9 +273,10 @@ public class GrammaireCleaner {
         for (int i = 0; i < lr.size(); i++) {
             p = lr.get(i);
             pNet = nettoyProd(p);
-            lr.remove(i);
             if (pNet != null) {
-                lr.add(i, pNet);
+                lr.set(i, pNet);
+            }else{
+                lr.remove(i);
             }
         }
 
@@ -315,9 +331,11 @@ public class GrammaireCleaner {
         for (int i = 0; i < lr.size(); i++) {
             p = lr.get(i);
             pNet = nettoyProd(p);
-            lr.remove(i);
+
             if (pNet != null) {
-                lr.add(i, pNet);
+                lr.set(i, pNet);
+            }else{
+                lr.remove(i);
             }
         }
 
@@ -375,7 +393,7 @@ public class GrammaireCleaner {
             }
 
             for (int i = 0; i < l.size(); i++) { //je parcours toutes les regles
-                if (l.get(i).equals("ε")) {//si une regle est epsilon, j'ajoute la production et je sort
+                if (l.get(i).equals("ε")) {//si une regle est epsilon(chaine vide), j'ajoute la production et je sort
                     epsilon_plus.add(p.getNonTerm());
                     return true;
                 } else {//Sinon je regarde si tous les non-terminaux de la partie droite sont dans epsilon_plus
@@ -415,14 +433,96 @@ public class GrammaireCleaner {
     }
 
     /**
-     * Méthode chargée de supprimer les e-prod
+     * Méthode chargée de supprimer les e-prod dans la grammaire
      */
     public void supprimer_epsilon_prod(){
 
     Set<String> epsilon_plus=calc_deriv_eps();
-        
+        System.out.println("J'ai fini d'executer calc_deriv_eps");
+        for(int i=0;i<lr.size();i++){
+            Production p =lr.get(i);
+            System.out.println("Je vais nettoyer la production :"+i);
+            lr.set(i, supprimer_epsilon_regle(p, epsilon_plus));
+            System.out.println("J'ai fini de nettoyer la production :"+i);
+        }
+        System.out.println("Je sort du for du supprimer_epsilon_regle");
+        gOrig.setR(lr);
+        // Maintenant, si epsilon appartient au langage engendré par la grammaire
+        if(gOrig.getContainEpsilon()){
+            //On crée un nouvel axiome distinct de l'axiome de la grammaire
+            gOrig.addProd("S2","ε|"+gOrig.getAxiome());
+            gOrig.setAxiome("S2");
+        }
 
     }
+
+    /**
+     * Méthode chargée de supprimer les e-prod dans une production
+     * @param p
+     * @param epsilon_plus
+     * @return
+     */
+    private Production supprimer_epsilon_regle(Production p, Set<String> epsilon_plus) {
+        /* Contient les regles actuelles de la production */
+        List<String> old_rules=p.getRegles();
+        /* Contiendra les nouvelles regles de la production */
+        List<String> new_rules=new ArrayList<>();
+        /**
+         * sigma_rules est construit de la manière suivante :
+         * Pour chaque symbole non-terminal x de la partie droite d'une regle de old_rules,
+         * tel que x appartient à epsilon_plus, on considère l'alternative :
+         * garder x dans la partie droite, ou bien l'enlever.
+         * sigma_rules est constitué de toute la combinatoire de ces alternatives, moins la chaine vide.
+         * C'est à dire que si ε apparait dans la combinatoire, on ne la retient pas dans sigma_rules
+         */
+        List<String> sigma_rules= new ArrayList<>();
+        sigma_rules.add("ε");
+
+        for (int i = 0; i < old_rules.size(); i++) {
+
+            char tab[]=old_rules.get(i).toCharArray();
+System.out.println("Je suis rentré dans le premier for, je regarde la regle :"+i );
+            for(int j=0;j<tab.length;j++){
+
+                if (ln.contains(Character.toString(tab[j]))){ //Pour chaque symbole x de la partie droite de old_rule
+
+                        if(epsilon_plus.contains(Character.toString(tab[j]))){//si x appartient à epsilon_plus
+                            //Je met dans sigma_rules la chaine de caractere sans x ...
+                            String s=old_rules.get(i);
+                            s=suppressionChar(s,j);
+                            sigma_rules.add(s);
+                            //... et avec x
+                            if(!(sigma_rules.contains(old_rules.get(i)))) {
+                                sigma_rules.add(old_rules.get(i));
+                            }
+                        }else{//Sinon je met la chaine+x dans sigma_rules
+                            if(!(sigma_rules.contains(old_rules.get(i)))) {
+                                sigma_rules.add(old_rules.get(i));
+                            }
+                        }
+
+
+                }
+            }//fin du parcours d'une regle
+
+        }//fin  du parcours des old_rules
+
+        /* On va maintenant créer les new_rules à partir de sigma rules : */
+        /* Il suffit d'ajouter toutes les regles sauf celles de la forme X -> ε */
+
+        for(int i=0;i<sigma_rules.size();i++){
+            if(!(sigma_rules.get(i).equals("ε"))){
+                new_rules.add(sigma_rules.get(i));
+            }
+        }
+        Production newP = new Production();
+        newP.setNonTerm(p.getNonTerm());
+        newP.setRegles(new_rules);
+
+        return newP;
+    }
+
+
 
 }
 

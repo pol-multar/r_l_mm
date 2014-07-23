@@ -160,4 +160,24 @@ public class GrammaireCleanerTest {
 
 
     }
+
+    @Test
+    public void testSupprimer_epsilon_prod(){
+        g1=new Grammaire();
+        g1.initGram("test3.txt");
+
+        s1.add("a");
+        s1.add("b");
+        s1.add("c");
+        g1.setT(s1);
+        g1.setAxiome("S");
+
+        gc1=new GrammaireCleaner(g1);
+        s2.add("B");
+        System.out.println("Lancement de la méthode supprimer epsilon_prod");
+        gc1.supprimer_epsilon_prod();
+       List<Production> lTest= g1.getR();
+       assertEquals(3, lTest.get(0).getRegles().size());
+        assertEquals(2,lTest.get(1).getRegles().size());
+    }
 }
