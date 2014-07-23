@@ -16,6 +16,7 @@ public class GrammaireCleaner {
     private List<Production> lr;
     private Set<String> lt;
     private Set<String> ln;
+    private boolean debug = false;
 
     public GrammaireCleaner(Grammaire gOriginale) {
         gOrig = gOriginale;
@@ -261,7 +262,6 @@ public class GrammaireCleaner {
     /**
      * Cette méthode est chargée d'executer le nettoyage des productions non productives de la grammaire
      */
-
     public void nettoyNonProdGramm() {
 
         /* je met à jour ln pour qu'elle ne contiennent que les non terminaux productifs */
@@ -436,14 +436,22 @@ public class GrammaireCleaner {
     public void supprimer_epsilon_prod() {
 
         Set<String> epsilon_plus = calc_deriv_eps();
-        //System.out.println("J'ai fini d'executer calc_deriv_eps");
+        if (debug) {
+            System.out.println("J'ai fini d'executer calc_deriv_eps");
+        }
         for (int i = 0; i < lr.size(); i++) {
             Production p = lr.get(i);
-            //System.out.println("Je vais nettoyer la production :"+i);
+            if (debug) {
+                System.out.println("Je vais nettoyer la production :" + i);
+            }
             lr.set(i, supprimer_epsilon_regle(p, epsilon_plus));
-            // System.out.println("J'ai fini de nettoyer la production :"+i);
+            if (debug) {
+                System.out.println("J'ai fini de nettoyer la production :" + i);
+            }
         }
-        //System.out.println("Je sort du for du supprimer_epsilon_regle");
+        if (debug) {
+            System.out.println("Je sort du for du supprimer_epsilon_regle");
+        }
         gOrig.setR(lr);
         // Maintenant, si epsilon appartient au langage engendré par la grammaire
         if (gOrig.getContainEpsilon()) {
@@ -480,7 +488,11 @@ public class GrammaireCleaner {
         for (int i = 0; i < old_rules.size(); i++) {
 
             char tab[] = old_rules.get(i).toCharArray();
-//System.out.println("Je suis rentré dans le premier for, je regarde la regle :"+i );
+            if (debug) {
+                if (debug) {
+                    System.out.println("Je suis rentré dans le premier for, je regarde la regle :" + i);
+                }
+            }
             for (int j = 0; j < tab.length; j++) {
 
                 if (ln.contains(Character.toString(tab[j]))) { //Pour chaque symbole x de la partie droite de old_rule
@@ -523,8 +535,12 @@ public class GrammaireCleaner {
 
     ///////////////////////////////////// Partie suppression des renommages /////////////////////////////////////
 
+    /**
+     * Méthode chargée de mettre les ensembles de renommages dans une hashmap
+     *
+     * @return
+     */
     public Hashtable<String, Set<String>> calc_ens_ren() {
-        //TODO tester
         /* Ren est l'ensemble qui contient les variables en lesquelles chaque variable peut être renommé */
         Hashtable<String, Set<String>> ren = new Hashtable<>();
         //La key est le nom de la production, et la donnée associée la liste des variables en lequelles la clé peut être renommée
@@ -533,7 +549,6 @@ public class GrammaireCleaner {
             Set<String> prodRen = calc_Renommages_1Prod(p);
             ren.put(p.getNonTerm(), prodRen);
         }
-
 
         return ren;
     }
@@ -554,9 +569,13 @@ public class GrammaireCleaner {
         while (!(oldEns.equals(newEns))) {
             oldEns = newEns;
             for (Production production : lr) {
-                System.out.println("calc_Renommages_1Prod : 1er for, analyse de la production : " + production.getNonTerm());
+                if (debug) {
+                    System.out.println("calc_Renommages_1Prod : 1er for, analyse de la production : " + production.getNonTerm());
+                }
                 if (oldEns.contains(production.getNonTerm())) {// Si la production est pas dans l'ensemble, on la parcourt pour savoir si elle contient des regles unitaires
-                    System.out.println("calc_Renommages_1Prod : La production " + production.getNonTerm() + " est dans oldEns, je lance recherche unitaire dessus");
+                    if (debug) {
+                        System.out.println("calc_Renommages_1Prod : La production " + production.getNonTerm() + " est dans oldEns, je lance recherche unitaire dessus");
+                    }
                     rechercheUnitaire(production, newEns);
                 }
             }
@@ -572,7 +591,9 @@ public class GrammaireCleaner {
      * @param ensemble   l'ensemble de renommage actuel
      */
     private void rechercheUnitaire(Production production, Set<String> ensemble) {
-        System.out.println("rechercheUnitaire : Je vais analyser les regles de la production:" + production.getNonTerm());
+        if (debug) {
+            System.out.println("rechercheUnitaire : Je vais analyser les regles de la production:" + production.getNonTerm());
+        }
         List<String> l = production.getRegles();
     /* On parcourt toutes les regles de la production */
         for (String regle : l) {
@@ -582,44 +603,107 @@ public class GrammaireCleaner {
                 if (!(ensemble.contains(regle))) {
                     /* on l'ajoute : */
                     ensemble.add(regle);
-                    System.out.println("rechercheUnitaire : J'ajoute le non terminal :" + regle + " à l'ensemble");
+                    if (debug) {
+                        System.out.println("rechercheUnitaire : J'ajoute le non terminal :" + regle + " à l'ensemble");
+                    }
                 }
             }
         }
 
     }
 
-    public void SupprRenom() {
+    /**
+     * La méthode chargée de la suppression des renommages
+     */
+    public void supprRenom() {
         /*Avant de supprimer les renommages, on calcul les variables de renommage */
         Hashtable<String, Set<String>> EnsRen = calc_ens_ren();
         /* On supprime les regles unitaires */
         for (Production p : lr) {
             supprRegleUnitaire(p);
         }
+        System.out.println("supprRenom : J'ai fini le premier for");
+        System.out.println("Affichage des regles nettoyées :");
+        for (Production p : lr) {
+            System.out.println(p);
+        }
         /* On complete les regles de chaque production, à partir des ensembles calculés */
 
-        //TODO compléter
+        for (Production p : lr) {
+            ajoutRegleRen(p, EnsRen.get(p.getNonTerm()));
+        }
+        System.out.println("supprRenom : j'ai fini le deuxieme for");
+
+        for (Production p : lr) {
+            System.out.println(p);
+        }
     }
+
 
     /**
      * Une méthode chargée de supprimer les regles qui ne possèdent qu'un non-terminal dans une production
-     * @param p
+     *
+     * @param p la production à nettoyer
      */
     private void supprRegleUnitaire(Production p) {
         List<String> l = p.getRegles();
         /* On parcourt toutes les regles de la production */
-        for (String regle : l) {
+        for (int i = 0; i < l.size(); i++) {
             /* Si la regle qu'on est en train de lire est composé d'un seul non terminal... */
-            if (ln.contains(regle)) {
+            if (l.get(i).length()==1) {
                 /* On l'enleve */
-                l.remove(regle);
+                l.remove(i);
             }
         }
         /* On modifie la liste de regles de la production */
         p.setRegles(l);
     }
 
-}
+    /**
+     * Une méthode chargée d'ajouter les regles manquantes à une production après suppression des renommages
+     *
+     * @param p      la production à compléter
+     * @param ensRen
+     */
+    private void ajoutRegleRen(Production p, Set<String> ensRen) {
+        /*On récupère les regles que possede actuellement la production */
+        List<String> l = p.getRegles();
+
+        List<String> listEnsRen = new ArrayList<>(ensRen);
+
+        String variable = p.getNonTerm();
+
+        for (String varRen : listEnsRen) {
+            if (varRen.equals(variable)) {//Obligatoire car la production est contenue dans Ren0
+                continue;
+            } else {
+                for (Production prodDeR : lr) {//Je cherche la production désignée dans listEnsRen dans la liste des production afin de récupérer les regles à ajouter
+                    if (prodDeR.getNonTerm().equals(varRen) && !(prodDeR.getNonTerm().equals(variable))) {
+                        ajoutRegleProd(l, prodDeR);
+                    }
+                }
+            }
+        }
+
+        p.setRegles(l);
+    }
+
+    /**
+     * Méthode chargée d'ajouter les regle d'une production à une liste donnée en parametre
+     *
+     * @param l       la liste où ajouter les regles
+     * @param prodDeR la production ou l'on récupère les regles
+     */
+    private void ajoutRegleProd(List<String> l, Production prodDeR) {
+        List<String> temp = prodDeR.getRegles();
+
+        for (String regle : temp) {
+            if (!(l.contains(regle)))
+                l.add(regle);
+        }
+    }
 
 }
+
+
 

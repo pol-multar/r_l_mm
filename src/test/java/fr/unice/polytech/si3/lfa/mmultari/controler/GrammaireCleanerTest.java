@@ -203,7 +203,7 @@ public class GrammaireCleanerTest {
         gc1=new GrammaireCleaner(g1);
         List<Production> lTest=g1.getR();
         assertEquals(4, lTest.size());
-        System.out.println("Test avec la production : "+lTest.get(0).getNonTerm());
+        //System.out.println("Test avec la production : "+lTest.get(0).getNonTerm());
         s2=gc1.calc_Renommages_1Prod(lTest.get(0));
         assertEquals(4,s2.size());
         assertTrue(s2.contains("S"));
@@ -243,5 +243,28 @@ public class GrammaireCleanerTest {
         assertEquals(s2,htest.get("B"));
         assertNotEquals(htest.get("S"),htest.get("A"));
         assertNotEquals(htest.get("C"),htest.get("B"));
+    }
+
+    /**
+     * Test de la méthode supprRenom
+     */
+    @Test
+    public void testSupprRenom(){
+        g1=new Grammaire();
+        g1.initGram("testsRU.txt");
+
+        s1.add("a");
+        s1.add("b");
+        s1.add("c");
+        g1.setT(s1);
+        g1.setAxiome("S");
+        assertTrue(g1.getN().contains("S"));
+        assertTrue(g1.getN().contains("A"));
+assertTrue(g1.getN().contains("B"));
+        assertTrue(g1.getN().contains("C"));
+        gc1=new GrammaireCleaner(g1);
+
+        gc1.supprRenom();
+
     }
 }
