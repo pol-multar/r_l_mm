@@ -438,14 +438,14 @@ public class GrammaireCleaner {
     public void supprimer_epsilon_prod(){
 
     Set<String> epsilon_plus=calc_deriv_eps();
-        System.out.println("J'ai fini d'executer calc_deriv_eps");
+        //System.out.println("J'ai fini d'executer calc_deriv_eps");
         for(int i=0;i<lr.size();i++){
             Production p =lr.get(i);
-            System.out.println("Je vais nettoyer la production :"+i);
+            //System.out.println("Je vais nettoyer la production :"+i);
             lr.set(i, supprimer_epsilon_regle(p, epsilon_plus));
-            System.out.println("J'ai fini de nettoyer la production :"+i);
+           // System.out.println("J'ai fini de nettoyer la production :"+i);
         }
-        System.out.println("Je sort du for du supprimer_epsilon_regle");
+        //System.out.println("Je sort du for du supprimer_epsilon_regle");
         gOrig.setR(lr);
         // Maintenant, si epsilon appartient au langage engendré par la grammaire
         if(gOrig.getContainEpsilon()){
@@ -481,7 +481,7 @@ public class GrammaireCleaner {
         for (int i = 0; i < old_rules.size(); i++) {
 
             char tab[]=old_rules.get(i).toCharArray();
-System.out.println("Je suis rentré dans le premier for, je regarde la regle :"+i );
+//System.out.println("Je suis rentré dans le premier for, je regarde la regle :"+i );
             for(int j=0;j<tab.length;j++){
 
                 if (ln.contains(Character.toString(tab[j]))){ //Pour chaque symbole x de la partie droite de old_rule
