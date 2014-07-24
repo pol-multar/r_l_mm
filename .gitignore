@@ -31,6 +31,7 @@ release.properties
 .idea/
 *.iml
 *.iws
+atlassian-ide-plugin.xml
 
 # Mac
 .DS_Store
