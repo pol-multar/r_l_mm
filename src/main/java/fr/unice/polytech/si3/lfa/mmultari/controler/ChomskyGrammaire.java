@@ -34,40 +34,57 @@ public class ChomskyGrammaire {
          * X -> a           avec a appartenant à l'ensemble des terminaux
          */
 
+        System.out.println("miseEnFormeChomsky: Avant suppression des terminaux :");
+        for (Production p : listProd) {
+            System.out.println(p);
+        }
+
         for (Production production : listProd) {
             modifTerm(production, renTerm, listTerm);
         }
+        System.out.println("miseEnFormeChomsky: Après suppression des terminaux :");
+        for (Production p : listProd) {
+            System.out.println(p);
+        }
+
     }
 
-    private void modifTerm(Production production, Hashtable<String, String> renTerm, Set<String> listTerm) {
+    /**
+     * Méthode chargée de supprimer les terminaux mélangés à des non terminaux dans les regles d'une production
+     *
+     * @param production la production dont on souhaite modifier les regles
+     * @param renTerm    la hashtable contenant le renoomage des terminaux
+     * @param listTerm   la liste des symboles terminaux de la grammaire
+     */
+    public void modifTerm(Production production, Hashtable<String, String> renTerm, Set<String> listTerm) {
+
         List<String> lesRegles = production.getRegles();
 
-        for (int i=0;i<lesRegles.size();i++) {//Parcours des regles
-            String regle=lesRegles.get(i);
+        for (int i = 0; i < lesRegles.size(); i++) {//Parcours des regles
+            String regle = lesRegles.get(i);
+
             char[] tab = regle.toCharArray();
             if (tab.length > 1) {//Si la regle n'est pas composée d'un seul terminal (la grammaire etant nettoyée)
+
                 for (int j = 0; j < tab.length; j++) {//Parcours de la regle
-                    if (listTerm.contains(tab[j])) {//Si je lis un terminal
+                    if (listTerm.contains(Character.toString(tab[j]))) {//Si je lis un terminal
+
                         /* Je vérifie qu'il n'a pas déjà été renommé */
                         if (renTerm.containsKey(Character.toString(tab[j]))) {//C'est le cas, on remplace
-                            String s =renTerm.get(Character.toString(tab[j]));
-                            tab[j]=s.charAt(0);
-                        }else {//Ce n'est pas le cas, on renomme le terminal, on remplace.
-                            String newKey=laGrammaire.addNewNonTerm();
-                            renTerm.put(newKey,Character.toString(tab[j]));
-                            tab[j]=newKey.charAt(0);
+                            String s = renTerm.get(Character.toString(tab[j]));
+                            tab[j] = s.charAt(0);
+                        } else {//Ce n'est pas le cas, on renomme le terminal, on remplace.
+                            String newName = laGrammaire.addNewNonTerm();
+                            renTerm.put(Character.toString(tab[j]), newName);
+                            tab[j] = newName.charAt(0);
                         }
                     }
-
                 }
                 /* On n'oublie pas de modifier la regle dans la liste */
-               lesRegles.set(i ,new String(tab));
-
-
+                lesRegles.set(i, new String(tab));
             }
-
         }
-/* On met à jour les regles */
+        /* On met à jour les regles */
         production.setRegles(lesRegles);
 
     }
