@@ -165,5 +165,13 @@ public class Grammaire {
         return Character.toString(newNonTerm);
     }
 
+    public String toString(){
+        //TODO modifier
+        String s= new String();
+        for(Production p:r){
+            s=s+p.toString();
+        }
+        return s;
+    }
 }
 

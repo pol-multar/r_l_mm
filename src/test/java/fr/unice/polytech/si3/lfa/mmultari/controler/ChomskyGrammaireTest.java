@@ -4,6 +4,7 @@ import fr.unice.polytech.si3.lfa.mmultari.modele.Grammaire;
 import fr.unice.polytech.si3.lfa.mmultari.modele.Production;
 import org.junit.After;
 import org.junit.Before;
+import org.junit.Ignore;
 import org.junit.Test;
 
 import java.util.HashSet;
@@ -53,11 +54,11 @@ public class ChomskyGrammaireTest {
         Hashtable<String, String> ht2 = new Hashtable<>();
         Set<String> s1 = g1.getT();
         Production production = g1.getR().get(0);
-        System.out.print("Production avant modif : ");
-        System.out.println(production);
+        //System.out.print("Production avant modif : ");
+        //System.out.println(production);
         chomskyGrammaire.modifTerm(production, ht, s1);
-        System.out.print("Production apres modif : ");
-        System.out.println(production);
+        //System.out.print("Production apres modif : ");
+        //System.out.println(production);
         assertNotEquals(ht2, ht);
 
 
@@ -74,6 +75,8 @@ public class ChomskyGrammaireTest {
         g1.setT(s);
         g1.setAxiome("E");
         chomskyGrammaire = new ChomskyGrammaire(g1);
+        //chomskyGrammaire.setDebug(true);
         chomskyGrammaire.miseEnFormeChomsky();
+        assertEquals(10,g1.getR().size());
     }
 }
