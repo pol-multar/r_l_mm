@@ -17,6 +17,7 @@ public class GrammaireTest {
     private String s1;
     private String returnTest;
 
+
     public GrammaireTest() {
 
     }
@@ -84,5 +85,16 @@ public class GrammaireTest {
         assertTrue(lesN.contains("S"));
         String s2=g2.addNewNonTerm();
         assertEquals("D",s2);
+    }
+
+    /**
+     * Test de l'initialisation avec les terminaux
+     */
+    public void testInitAvecTerm(){
+        g1.initGram2("testAll.txt");
+        Set<String> set1=g1.getT();
+        assertEquals(5,set1.size());
+        List<Production> l1=g1.getR();
+        assertEquals(3,l1.size());
     }
 }

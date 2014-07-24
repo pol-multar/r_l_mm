@@ -94,6 +94,28 @@ public class Grammaire {
         addAllProd(lesProdLues);
     }
 
+    public void initGram2(String fic){
+        //Je lis le fichier
+        String ficLu = lectureProd(fic);
+        //Je découpe une premiere fois le fichier
+        String[] termEtRegles =ficLu.split("_");
+        //La case 0 doit contenir les terminaux, la case 1 toutes les productions
+        addAllTerm(termEtRegles[0]);
+        //Je decoupe la string obtenue en 1 en tableau contenant les productions en String
+        String[] lesProdLues = termEtRegles[1].split(";");
+        //J'ajoute les productions dans la grammaire
+        addAllProd(lesProdLues);
+    }
+
+    private void addAllTerm(String termEtRegle) {
+        String[] lesTerm=termEtRegle.split(",");
+        for (int i = 0; i <lesTerm.length ; i++) {
+            t.add(lesTerm[i]);
+
+        }
+
+    }
+
     /**
      * Methode qui ajoute une production dans la grammaire
      *
@@ -118,6 +140,9 @@ public class Grammaire {
         for (int i = 0; i < lesProd.length; i++) {
             String[] temp = lesProd[i].split(":");
             Production pTemp = new Production(temp[0], temp[1]);
+            if(this.axiome==null){
+                this.axiome=pTemp.getNonTerm();
+            }
             r.add(pTemp);
             n.add(pTemp.getNonTerm());
 

@@ -79,4 +79,15 @@ public class ChomskyGrammaireTest {
         chomskyGrammaire.miseEnFormeChomsky();
         assertEquals(10,g1.getR().size());
     }
+
+    @Test
+    public void testMiseEnForme2(){
+        g1.initGram2("testAll.txt");
+        //g1.setAxiome("E");
+        chomskyGrammaire = new ChomskyGrammaire(g1);
+        chomskyGrammaire.setDebug(true);
+        chomskyGrammaire.miseEnFormeChomsky();
+        assertEquals(10,g1.getR().size());
+        assertEquals("E",g1.getAxiome());
+    }
 }
