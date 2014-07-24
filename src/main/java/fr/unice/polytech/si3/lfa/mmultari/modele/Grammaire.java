@@ -1,5 +1,7 @@
 package fr.unice.polytech.si3.lfa.mmultari.modele;
 
+import fr.unice.polytech.si3.lfa.mmultari.utilitaires.utils;
+
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;
@@ -10,6 +12,8 @@ import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
+
+
 
 /**
  * Created by mmultari on 04/07/14.
@@ -145,6 +149,21 @@ public class Grammaire {
         }
     }
 
+    /**
+     * Une méthode qui retourne un non Terminal pas encore utilisé
+     * et l'ajoute dans la liste des non-terminaux
+     */
+
+    public String addNewNonTerm(){
+        char newNonTerm='A';
+        while(n.contains(Character.toString(newNonTerm))){
+            int i= utils.toASCII(newNonTerm);
+            i=i+1;
+            newNonTerm=utils.toChar(i);
+        }
+        n.add(Character.toString(newNonTerm));
+        return Character.toString(newNonTerm);
+    }
 
 }
 

@@ -68,4 +68,21 @@ public class GrammaireTest {
         assertEquals(p1.getNonTerm(),p2.getNonTerm());
         assertEquals(p1.getRegles(),p2.getRegles());
     }
+
+    /**
+     * Test de addNewNonTerm
+     */
+    @Test
+    public void testAddNewNonTerm(){
+        g1.initGram("test.txt");
+        s1=g1.addNewNonTerm();
+        assertEquals("A",s1);
+
+        Grammaire g2=new Grammaire();
+        g2.initGram("testsRU.txt");
+        Set<String> lesN=g2.getN();
+        assertTrue(lesN.contains("S"));
+        String s2=g2.addNewNonTerm();
+        assertEquals("D",s2);
+    }
 }
