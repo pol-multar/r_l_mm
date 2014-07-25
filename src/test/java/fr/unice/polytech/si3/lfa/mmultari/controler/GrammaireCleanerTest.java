@@ -85,27 +85,22 @@ public class GrammaireCleanerTest {
     /**
      * Test de nettoyage de grammaire
      */
-@Ignore("Ne passe pas les tests")
     @Test
-    public void testSupprInutiles(){
+    public void testListInutiles(){
         g1=new Grammaire();
-        g1.initGram("test2.txt");//r et n sont remplis
-
-        s1.add("a");
-        s1.add("b");
-        g1.setT(s1);//t est remplie
-        g1.setAxiome("S");//axiome est remplie
-
-
-
+        g1.initGram2("test4.txt");
         gc1=new GrammaireCleaner(g1);
-
-        gc1.nettoyGrammaire();
-        s2=g1.getN();
+        s2=gc1.listAccessibles();
         assertTrue(s2.contains("S"));
         assertTrue(s2.contains("A"));
+        assertFalse(s2.contains("B"));
         assertTrue(s2.contains("C"));
-        assertFalse(s2.contains("D"));
+        gc1.nettoyGrammaire();
+        s3=g1.getN();
+        assertTrue(s2.contains("S"));
+        assertTrue(s2.contains("A"));
+        assertFalse(s2.contains("B"));
+        assertTrue(s2.contains("C"));
 
     }
 
