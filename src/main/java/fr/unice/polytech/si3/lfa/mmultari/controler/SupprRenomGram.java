@@ -21,7 +21,7 @@ public class SupprRenomGram {
     /**
      * Méthode chargée de mettre les ensembles de renommages dans une hashmap
      *
-     * @return
+     * @return une hashmap contenant les renommages pour chaque production
      */
     public Hashtable<String, Set<String>> calc_ens_ren() {
         List<Production> listeProd=laGrammaire.getR();
@@ -147,14 +147,20 @@ public class SupprRenomGram {
         List<String> newRegles = new ArrayList<>();/* la nouvelle liste contenant */
         /* On parcourt toutes les regles de la production */
         for (String regle : oldRegles) {
-            System.out.println("Regle analysée : "+ regle);
-            /* Si la regle qu'on est en train de lire est composé d'un seul non terminal... */
+            if(debug) {
+                System.out.println("Regle analysée : " + regle);
+            }
+            /* Si la regle qu'on est en train de lire est n'est pas composée d'un seul non terminal... */
             if (!(ln.contains(regle))) {
-                System.out.println("Regle ajoutée : "+regle);
-                /* On l'enleve */
+                if (debug) {
+                    System.out.println("Regle ajoutée : " + regle);
+                }
+                /*On la garde */
                 newRegles.add(regle);
             }else{
-                System.out.println("Regle oubliée : "+regle);
+                if(debug) {
+                    System.out.println("Regle oubliée : " + regle);
+                }
             }
         }
         /* On modifie la liste de regles de la production */
@@ -165,7 +171,7 @@ public class SupprRenomGram {
      * Une méthode chargée d'ajouter les regles manquantes à une production après suppression des renommages
      *
      * @param p      la production à compléter
-     * @param ensRen
+     * @param ensRen l'ensemble de renommage
      */
     private void ajoutRegleRen(Production p, Set<String> ensRen) {
         List<Production> listeProd=laGrammaire.getR();

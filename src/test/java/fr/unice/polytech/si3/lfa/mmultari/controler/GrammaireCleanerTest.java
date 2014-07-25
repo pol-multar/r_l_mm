@@ -102,6 +102,10 @@ public class GrammaireCleanerTest {
         assertFalse(s2.contains("B"));
         assertTrue(s2.contains("C"));
 
+        for(Production p:g1.getR()){
+            System.out.println(p);
+        }
+
     }
 
 /**

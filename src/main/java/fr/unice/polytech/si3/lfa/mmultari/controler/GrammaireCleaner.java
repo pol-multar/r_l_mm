@@ -502,9 +502,9 @@ public class GrammaireCleaner {
     /**
      * Méthode chargée de supprimer les e-prod dans une production
      *
-     * @param p
-     * @param epsilon_plus
-     * @return
+     * @param p la production à nettoyer
+     * @param epsilon_plus l'ensemble des variables effaçables
+     * @return la production nettoyée
      */
     private Production supprimer_epsilon_regle(Production p, Set<String> epsilon_plus) {
         /* Contient les regles actuelles de la production */

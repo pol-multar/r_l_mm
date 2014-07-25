@@ -26,6 +26,9 @@ public class ChomskyGrammaire {
         this.debug=yesOrNo;
     }
 
+    /**
+     * La méthode principale qui met une grammaire sous Forme Normale de Chomsky
+     */
     public void miseEnFormeChomsky() {
         List<Production> listProd = laGrammaire.getR();
         List<Production> listProdTerm = new ArrayList<>();//Contient la liste des nouvelles productions à la fin de la premiere étape
