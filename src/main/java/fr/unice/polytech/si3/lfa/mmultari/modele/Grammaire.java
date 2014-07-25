@@ -25,8 +25,7 @@ public class Grammaire {
     private String axiome;/* L'axiome (symbole de départ) */
     boolean containEpsilon;
 
-    //TODO récupéréer les terminaux + si contient epsilon
-
+//TODO ContainEpsilon
     /**
      * Constructeur sans paramètres de la classe Grammaire
      */

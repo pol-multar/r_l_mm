@@ -105,6 +105,8 @@ public class GrammaireCleaner {
         Boolean haveNonTermUnex = false;
         /* La liste contenant toutes les regles de la production :*/
         List<String> l = oldProd.getRegles();
+        /* la lsite qui contiendra toutes les regles nettoyées */
+        List<String> newListR = new ArrayList<>();
 
         /* On analyse chaque regle de la production */
         for (int i = 0; i < l.size(); i++) { //je parcours toutes les regles
@@ -117,21 +119,28 @@ public class GrammaireCleaner {
                     haveNonTermUnex = true;
                 }
             }
-            /* Si la regle possede un non terminal que l'on a supprimé, on l'enleve */
-            if (haveNonTermUnex) {
-                l.remove(i);
+            /* Si la regle possede un non terminal que l'on a supprimé, on ne la garde pas */
+            if (!haveNonTermUnex) {
+                newListR.add(l.get(i));
             }
             /* On remet haveNonTermUnex à false pour la prochaine regle */
             haveNonTermUnex = false;
         }
 
-        if (l.isEmpty()) {
+        if (newListR.isEmpty()) {
             return null;
         } else {
-            oldProd.setRegles(l);
+            oldProd.setRegles(newListR);
             return oldProd;
         }
     }
+
+    /**
+     * Méthode chargée de supprimer un charactère à une position dans une String
+     * @param s la String à modifier
+     * @param positionRemplacee la position du caractère à supprimer
+     * @return la chaine de caractère où l'on a supprimé le caractère souhaité
+     */
 
     private String suppressionChar(String s, int positionRemplacee) {
         ArrayList<Character> charList = new ArrayList<>();
@@ -254,7 +263,6 @@ public class GrammaireCleaner {
      * @return le non-terminal qui désigne la production si elle est productive, null sinon
      */
     public String listProdEtape2(Production p, Set<String> nActuel) {
-        //TODO tester
         return parcoursRegles(nActuel, p);
     }
 
@@ -263,6 +271,7 @@ public class GrammaireCleaner {
      * Cette méthode est chargée d'executer le nettoyage des productions non productives de la grammaire
      */
     public void nettoyNonProdGramm() {
+        List<Production> newListR = new ArrayList<>();/* La liste qui contiendra seulement les productions productives */
 
         /* je met à jour ln pour qu'elle ne contiennent que les non terminaux productifs */
         ln = listProductifs();
@@ -273,15 +282,13 @@ public class GrammaireCleaner {
             p = lr.get(i);
             pNet = nettoyProd(p);
             if (pNet != null) {
-                lr.set(i, pNet);
-            } else {
-                lr.remove(i);
+                newListR.add(pNet);
             }
         }
 
         /* Je met a jour les données de la grammaire après modification */
         gOrig.setN(this.ln);
-        gOrig.setR(this.lr);
+        gOrig.setR(newListR);
     }
 
     ///////////////////////////////////// Partie suppression des inaccessibles /////////////////////////////////////
