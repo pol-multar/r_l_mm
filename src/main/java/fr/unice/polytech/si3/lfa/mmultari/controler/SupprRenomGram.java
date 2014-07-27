@@ -140,6 +140,7 @@ public class SupprRenomGram {
             }
         }
 
+laGrammaire.setR(listeProd);
         //TODO On va vérifier que toutes les productions soient bien différentes
 
 

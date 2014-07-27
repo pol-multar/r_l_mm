@@ -35,11 +35,30 @@ public class Controler {
         }
     }
 
-    public void run(int numMenu) {
+    /**
+     * Permet de retourner un chaine de caractere entre par un utilisateur.<br />
+     * L'utilisateur ne peut entre une mauvaise valeur.
+     *
+     * @return une chaine entre par l'utilisateur via le clavier.
+     */
+    public String getString() {
+        scanner = new Scanner(fdin);
+        try {
+            return scanner.nextLine();
+        } catch (InputMismatchException exp) {
+            return null;
+        }
+    }
+
+    public void run() {
         int choix = -1;
+        String haveEps = new String();
+        laVue.questionPreliminaire();
+        haveEps = getString();
+        menuEpsilon(haveEps);
         while (true) {
             try {
-                affichage(numMenu);
+                laVue.menuPrincipal();
                 choix = getNumber();
                 if (choix != 0) {
                     choixMenu(choix);
@@ -54,24 +73,40 @@ public class Controler {
     }
 
     public void choixMenu(int choix) {
-        if (choix == 1) {
-
-        } else if (choix == 2) {
-            leModele.supprimerImproductifs();
-        } else if (choix == 3) {
-            leModele.supprimerInaccessibles();
-        } else if (choix == 4) {
-            leModele.supprimerEpsilonProd();
-        } else if (choix == 5) {
-            leModele.supprimerRenommage();
-        } else if (choix == 6) {
-            leModele.miseEnFormeChomsky();
+        switch (choix) {
+            case 1:
+                laVue.affichageGram(leModele.getLaGrammaire());
+                break;
+            case 2:
+                leModele.supprimerImproductifs();
+                break;
+            case 3:
+                leModele.supprimerInaccessibles();
+                break;
+            case 4:
+                leModele.supprimerEpsilonProd();
+                break;
+            case 5:
+                leModele.supprimerRenommage();
+                break;
+            case 6:
+                leModele.miseEnFormeChomsky();
+                break;
+            default:
+                laVue.badOption();
+                break;
         }
-
     }
 
-    public void affichage(int menu) {
-
+    public void menuEpsilon(String rep) {
+        if (rep.equals("Y")) {
+            leModele.getLaGrammaire().setContainEpsilon(true);
+        } else if (rep.equals("N")) {
+            leModele.getLaGrammaire().setContainEpsilon(false);
+        } else {
+            laVue.badOption();
+        }
     }
+
 
 }

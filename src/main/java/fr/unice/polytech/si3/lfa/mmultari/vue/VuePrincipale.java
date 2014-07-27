@@ -28,7 +28,7 @@ public class VuePrincipale implements Observer {
     }
 
     public void questionPreliminaire() {
-        System.out.println("Epsilon appartient-il au langage engendré par la grammaire ?");
+        System.out.println("Epsilon appartient-il au langage engendré par la grammaire ?(Y/N)");
     }
 
     public void menuPrincipal() {
@@ -39,6 +39,7 @@ public class VuePrincipale implements Observer {
         System.out.println("4 -> Supprimer les epsilon-productions");
         System.out.println("5 -> Supprimer les renommages");
         System.out.println("6 -> Mettre la grammaire sous Forme Normale de Chomsky");
+        System.out.println("\n\n0 -> Quitter le prgramme");
     }
 
     public void affichageGram(Grammaire uneGram) {
@@ -53,11 +54,11 @@ public class VuePrincipale implements Observer {
         for (String s : listTerm) {
             System.out.print(s + ", ");
         }
-        System.out.print("Symboles non terminaux : ");
+        System.out.print("\nSymboles non terminaux : ");
         for (String s : listNonTerm) {
             System.out.print(s + ", ");
         }
-        System.out.println("Productions : ");
+        System.out.println("\nProductions : ");
         for (Production p : listProd) {
             affichageProd(p);
         }
