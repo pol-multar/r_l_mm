@@ -39,6 +39,10 @@ public class GrammaireCleaner {
         }
     }
 
+    public void setDebug(boolean yesOrNo){
+        this.debug=yesOrNo;
+    }
+
     ////////////////////////////// Partie méthodes utilisées dans plusieurs endroits //////////////////////////////////
 
 

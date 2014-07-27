@@ -16,6 +16,10 @@ public class SupprRenomGram {
         this.laGrammaire=uneGrammaire;
     }
 
+    public void setDebug(boolean yesOrNo){
+        this.debug=yesOrNo;
+    }
+
     ///////////////////////////////////// Partie suppression des renommages /////////////////////////////////////
 
     /**
@@ -105,29 +109,35 @@ public class SupprRenomGram {
         List<Production> listeProd=laGrammaire.getR();
         /*Avant de supprimer les renommages, on calcul les variables de renommage */
         Hashtable<String, Set<String>> EnsRen = calc_ens_ren();
-        System.out.println("Affichage des regles avant nettoyage :");
-        for (Production p : listeProd) {
-            System.out.println(p);
+        if(debug) {
+            System.out.println("Affichage des regles avant nettoyage :");
+            for (Production p : listeProd) {
+                System.out.println(p);
+            }
         }
 
         /* On supprime les regles unitaires */
         for (Production p : listeProd) {
             supprRegleUnitaire(p);
         }
-        System.out.println("supprRenom : J'ai fini le premier for");
-        System.out.println("Affichage des regles nettoyées :");
-        for (Production p : listeProd) {
-            System.out.println(p);
+        if(debug) {
+            System.out.println("supprRenom : J'ai fini le premier for");
+            System.out.println("Affichage des regles nettoyées :");
+            for (Production p : listeProd) {
+                System.out.println(p);
+            }
         }
         /* On complete les regles de chaque production, à partir des ensembles calculés */
 
         for (Production p : listeProd) {
             ajoutRegleRen(p, EnsRen.get(p.getNonTerm()));
         }
-        System.out.println("supprRenom : j'ai fini le deuxieme for");
+        if(debug) {
+            System.out.println("supprRenom : j'ai fini le deuxieme for");
 
-        for (Production p : listeProd) {
-            System.out.println(p);
+            for (Production p : listeProd) {
+                System.out.println(p);
+            }
         }
 
         //TODO On va vérifier que toutes les productions soient bien différentes
