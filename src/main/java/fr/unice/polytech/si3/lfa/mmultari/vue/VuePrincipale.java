@@ -2,7 +2,10 @@ package fr.unice.polytech.si3.lfa.mmultari.vue;
 
 import fr.unice.polytech.si3.lfa.mmultari.modele.Grammaire;
 import fr.unice.polytech.si3.lfa.mmultari.modele.Modele;
+import fr.unice.polytech.si3.lfa.mmultari.modele.Production;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Observable;
 import java.util.Observer;
 
@@ -39,41 +42,86 @@ public class VuePrincipale implements Observer {
     }
 
     public void affichageGram(Grammaire uneGram) {
+        List<String> listNonTerm = new ArrayList<>(uneGram.getN());
+        List<String> listTerm = new ArrayList<>(uneGram.getT());
+        List<Production> listProd = uneGram.getR();
 
+
+        System.out.println("\n *** Affichage de la grammaire *** \n");
+        System.out.println("Axiome :" + uneGram.getAxiome());
+        System.out.print("Symboles terminaux : ");
+        for (String s : listTerm) {
+            System.out.print(s + ", ");
+        }
+        System.out.print("Symboles non terminaux : ");
+        for (String s : listNonTerm) {
+            System.out.print(s + ", ");
+        }
+        System.out.println("Productions : ");
+        for (Production p : listProd) {
+            affichageProd(p);
+        }
+        System.out.println("*****************************************");
     }
 
-    private void affichageProds(Grammaire uneGram) {
+    private void affichageProd(Production uneProd) {
+        System.out.println(uneProd);
     }
 
     public void updateImprod(Object arg) {
         if ("2".equals(arg)) {
-            affichageProds(this.leModele.getLaGrammaire());
+            System.out.println("Les improductifs ont été retirés de la grammaire");
+            affichageGram(this.leModele.getLaGrammaire());
         }
     }
 
     public void updateInacc(Object arg) {
-
+        if ("3".equals(arg)) {
+            System.out.println("Les inaccessibles ont été retirés de la grammaire");
+            affichageGram(this.leModele.getLaGrammaire());
+        }
     }
 
     public void updateNettoy(Object arg) {
-
+        if ("23".equals(arg)) {
+            System.out.println("Les improductifs et les inaccessibles ont été retirés de la grammaire");
+            affichageGram(this.leModele.getLaGrammaire());
+        }
     }
 
     public void updateEpsilonProd(Object arg) {
+        if ("4".equals(arg)) {
+            System.out.println("Les epsilon-production ont été retirés de la grammaire");
+            affichageGram(this.leModele.getLaGrammaire());
+        }
 
     }
 
     public void updateRenom(Object arg) {
+        if ("5".equals(arg)) {
+            System.out.println("Les renommages ont été retirés de la grammaire");
+            affichageGram(this.leModele.getLaGrammaire());
+        }
 
     }
 
     public void updateChomsky(Object arg) {
+        if ("6".equals(arg)) {
+            System.out.println("La gramamire a été mise sous FNG");
+            affichageGram(this.leModele.getLaGrammaire());
+        }
 
     }
 
 
     @Override
     public void update(Observable o, Object arg) {
+        updateImprod(arg);
+        updateInacc(arg);
+        updateNettoy(arg);
+        updateEpsilonProd(arg);
+        updateRenom(arg);
+        updateChomsky(arg);
 
     }
 }
