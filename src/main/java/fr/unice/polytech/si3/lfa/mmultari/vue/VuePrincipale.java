@@ -68,6 +68,14 @@ public class VuePrincipale implements Observer {
         System.out.println(uneProd);
     }
 
+    public void badOption(){
+        System.out.println("Commande inconnue, recommencez \n \n");
+    }
+
+    public void quitter(){
+        System.out.println("\n Sortie du programme ... \n \n");
+    }
+
     public void updateImprod(Object arg) {
         if ("2".equals(arg)) {
             System.out.println("Les improductifs ont été retirés de la grammaire");
